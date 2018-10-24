@@ -20,7 +20,7 @@ where d.department_id = e.department_id
 and d.department_name in ('IT','Sales')
 GROUP BY department_name;
 ```
-####•	1.2查询二  
+#### •	1.2查询二  
 
 ```
 SELECT d.department_name，count(e.job_id)as "部门总人数",
