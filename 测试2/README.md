@@ -27,7 +27,7 @@ SQL> GRANT con_res_view TO new_user;
 Grant succeeded.
 SQL> exit
  ```
- ![]()
+ ![](https://github.com/songhaoge/oracle/blob/master/test2/1.png?raw=true)
 ### 2.第2步：新用户user-tsx连接到 pdborcl，创建表mytable和视图myview，插入数据，最后将myview的SELECT对象权限授予hr用户。
 $ sqlplus /123@pdborcl
 SQL> show user;
