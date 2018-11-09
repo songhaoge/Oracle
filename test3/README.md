@@ -11,8 +11,9 @@
 •	表创建成功后，插入数据，数据能并平均分布到各个分区。每个表的数据都应该大于1万行，对表进行联合查询。
 •	写出插入数据的语句和查询数据的语句，并分析语句的执行计划。
 •	进行分区与不分区的对比实验。
-创建orders表和order_drtails表
-创建orders表的语句如下：
+### 创建orders表和order_drtails表
+创建orders表的语句如下：  
+```
 CREATE TABLE ORDERS
 (
 order_id NUMBER(10,0)NOT NULL,
@@ -45,7 +46,9 @@ TO_DATE(' 2018-01-01 00: 00: 00', 'SYYYY-MM-DD HH24: MI: SS',
 'NLS_CALENDAR=GREGORIAN'))TABLESPACE USERS03
 );
 alter table orders add constraint order_details_fk1 primary key (order_id);
-创建order_details表的语句如下：
+```
+创建order_details表的语句如下：  
+```
 CREATE TABLE order_details
 (
 id NUMBER(10,0)NOT NULL,
@@ -63,9 +66,13 @@ INITRANS 1
 STORAGE( BUFFER_POOL DEFAULT )
 NOCOMPRESS NOPARALLEL
 PARTITION BY REFERENCE (order_details_fk1);
-插入上万条数据
-以下样例查看表空间的数据库文件，以及每个文件的磁盘占用情况。
-触发器创建
+```
+### 插入上万条数据
+***
+以下样例查看表空间的数据库文件，以及每个文件的磁盘占用情况。  
+
+触发器创建  
+```
 create or replace trigger tr_IDADD
 before insert on orders
 for each row
@@ -96,7 +103,9 @@ start with 1
 increment by 1
 cache 20
 order;
-插入语句执行多次
+```
+插入语句执行多次  
+```
 !NSERT INTO orders(customer_name, customer_tel, order_date, employee_id, trade_receivable, discount) VALUES('www', '182', to_date ( '2015-09-18 12:42:20' , 'YYYY-MM-DD HH24:MI:SS' ), 23, 343, 2);
 INSERT INTO orders(customer_name, customer_tel, order_date, employee_id, trade_receivable, discount) VALUES('eee', '155', to_date ( '2016-08-17 11:21:20' , 'YYYY-MM-DD HH24:MI:SS' ), 233, 322,4);
 INSERT INTO orders(customer_name, customer_tel, order_date, employee_id, trade_receivable, discount) VALUES('rrr', '182', to_date ( '2017-06-16 11:11:20' , 'YYYY-MM-DD HH24:MI:SS' ), 123, 2333,1);
@@ -109,19 +118,32 @@ insert into order_details(id, PRODUCT_ID, PRODUCT_NUM, PRODUCT_PRICE) VALUES(345
 insert into orders
 select *
 from order_details;
-插入后查询结果脚本输出   
-分区查询
+```
+插入后查询结果脚本输出    
+![](https://github.com/songhaoge/oracle/blob/master/test3/1.png?raw=true)
+![](https://github.com/songhaoge/oracle/blob/master/test3/2.png?raw=true)
+### 分区查询  
+
+```
 SELECT
     *
 FROM orders partition (PARTITION_BEFORE_2018), order_details partition (PARTITION_BEFORE_2018);
 
 select * from order_details ode join orders ods
 	on ode.order_id=ods.order_id;
-查询脚本   
-不分区查询
-select * from orders, order_details where orders.order_id = order_details.order_id(+)；
+```
 查询脚本    
-对比分析
+![](https://github.com/songhaoge/oracle/blob/master/test3/3.png?raw=true)
+![](https://github.com/songhaoge/oracle/blob/master/test3/4.png?raw=true)
+### 不分区查询  
+```
+select * from orders, order_details where orders.order_id = order_details.order_id(+)；
+```
+查询脚本    
+![](https://github.com/songhaoge/oracle/blob/master/test3/5.png?raw=true)
+![](https://github.com/songhaoge/oracle/blob/master/test3/6.png?raw=true)
+### 对比分析  
+***
 两张表均有上万条数据，从表ORDER_DETAILS跟主表ORDERS建立了主外键，orders表按照时间分成三个表空间，通过分区和不分区实验结果对比，分区表查 询的资源占比明显高出很多，查询速度快了不少。 通过分区， 查询时就不用扫描整张表，而是一块区域一块区域的去查找，这样就会快不少。
 
 
