@@ -17,7 +17,7 @@ Oracle有一个开发者角色resource，可以创建表、过程、触发器等
 $ sqlplus system/123@pdborcl
 SQL> CREATE ROLE con_shg_view;
 Role created.
-SQL> GRANT connect,resource,CREATE VIEW TO con_tsx_view;
+SQL> GRANT connect,resource,CREATE VIEW TO con_shg_view;
 Grant succeeded.
 SQL> CREATE USER user_tsx IDENTIFIED BY 123 DEFAULT TABLESPACE users TEMPORARY TABLESPACE temp;
 User created.
