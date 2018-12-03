@@ -15,7 +15,7 @@ Oracle有一个开发者角色resource，可以创建表、过程、触发器等
 ### 1.第1步：以system登录到pdborcl，创建角色con_shg_view和用户user_tsx，并授权和分配空间：  
 ```
 $ sqlplus system/123@pdborcl
-SQL> CREATE ROLE con_tsx_view;
+SQL> CREATE ROLE con_shg_view;
 Role created.
 SQL> GRANT connect,resource,CREATE VIEW TO con_tsx_view;
 Grant succeeded.
