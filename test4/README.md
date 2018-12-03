@@ -1,6 +1,9 @@
-Oracle实验四：对象管理
-一、第1步：在new_lyk用户中创建员工表、部门表、订单表、订单详单表、产品表。
-（0）为new_lyk用户分配相关权限。
+# Oracle实验四：对象管理  
+
+## 一、第1步：在new_lyk用户中创建员工表、部门表、订单表、订单详单表、产品表。  
+
+### （0）为new_lyk用户分配相关权限。  
+```
 -- QUOTAS
 ALTER USER NEW_LYK QUOTA UNLIMITED ON USERS;
 ALTER USER NEW_LYK QUOTA UNLIMITED ON USERS02;
@@ -13,7 +16,9 @@ ALTER USER NEW_LYK DEFAULT ROLE "CONNECT","RESOURCE";
 
 -- SYSTEM PRIVILEGES
 GRANT CREATE VIEW TO NEW_LYK WITH ADMIN OPTION;
-（1）登录new_lyk用户，创建部门表语句及其相关语句（DEPARTMENTS 表空间：USERS）。
+```
+### （1）登录new_lyk用户，创建部门表语句及其相关语句（DEPARTMENTS 表空间：USERS）。  
+```
 CREATE TABLE DEPARTMENTS
 (
   DEPARTMENT_ID NUMBER(6, 0) NOT NULL
@@ -56,7 +61,9 @@ BUFFER_POOL DEFAULT
 NOCOMPRESS NO INMEMORY NOPARALLEL;
 
 Table DEPARTMENTS 已创建。
-（2）登录new_lyk用户，创建员工表语句及其相关sql语句（EMPLOYEES 表空间：USERS）。
+```
+### （2）登录new_lyk用户，创建员工表语句及其相关sql语句（EMPLOYEES 表空间：USERS）。  
+```
 CREATE TABLE EMPLOYEES
 (
 EMPLOYEE_ID NUMBER(6, 0) NOT NULL
@@ -195,7 +202,9 @@ ADD CONSTRAINT EMPLOYEES_SALARY CHECK
 ENABLE;
 
 Table EMPLOYEES已变更。
-（3）登录new_lyk用户，创建订单表语句及其相关sql语句（ORDERS 分区表：USERS,USERS02）。
+```
+### （3）登录new_lyk用户，创建订单表语句及其相关sql语句（ORDERS 分区表：USERS,USERS02）。  
+```
 --  DDL for Table ORDER_ID_TEMP
 CREATE GLOBAL TEMPORARY TABLE "ORDER_ID_TEMP"
 (	"ORDER_ID" NUMBER(10,0) NOT NULL ENABLE,
@@ -363,7 +372,9 @@ EMPLOYEE_ID
 ENABLE;
 
 Table ORDERS已变更。
-（4）登录new_lyk用户，创建产品表语句及其相关sql语句（PRODUCTS 表空间：USERS）。
+```
+### （4）登录new_lyk用户，创建产品表语句及其相关sql语句（PRODUCTS 表空间：USERS）。  
+```
 CREATE TABLE PRODUCTS
 (
 PRODUCT_NAME VARCHAR2(40 BYTE) NOT NULL
@@ -395,7 +406,9 @@ ADD CONSTRAINT PRODUCTS_CHK1 CHECK
 ENABLE;
 
 Table PRODUCTS已变更。
-（5）登录new_lyk用户，创建订单详表语句及其相关sql语句（ORDER_DETAILS 分区表：USERS,USERS02）。
+```
+### （5）登录new_lyk用户，创建订单详表语句及其相关sql语句（ORDER_DETAILS 分区表：USERS,USERS02）。  
+```
 CREATE TABLE ORDER_DETAILS
 (
 ID NUMBER(10, 0) NOT NULL
@@ -502,8 +515,11 @@ ADD CONSTRAINT ORDER_DETAILS_PRODUCT_NUM CHECK
 ENABLE;
 
 Table ORDER_DETAILS已变更。
-二、第2步：插入相关数据sql语句及其查询相关数据sql语句。
-（1）录入数据语句及其相关语句。
+```
+## 二、第2步：插入相关数据sql语句及其查询相关数据sql语句。
+#### （1）录入数据语句及其相关语句。  
+
+```
 注：要求至少有1万个订单，每个订单至少有4个详单。至少有两个部门，每个部门至少有1个员工，其中只有一个人没有领导，一个领导至少有一个下属，并且它的下属是另一个人的领导（比如A领导B，B领导C）。
 --------------------------------------------------------
 --  DDL for View VIEW_ORDER_DETAILS
@@ -640,7 +656,9 @@ MODIFY PARTITION PARTITION_BEFORE_2018
 NOCOMPRESS;
 
 --Index ORDERS_INDEX_DATE已变更。
-（2）序列的应用语句及其相关语句。
+```
+#### （2）序列的应用语句及其相关语句。  
+```
 注：插入ORDERS和ORDER_DETAILS 两个表的数据时，主键ORDERS.ORDER_ID, ORDER_DETAILS.ID的值必须通过序列SEQ_ORDER_ID和SEQ_ORDER_ID取得，不能手工输入一个数字。
 --------------------------------------------------------
 --  DDL for Sequence SEQ_ORDER_ID
@@ -654,8 +672,10 @@ CREATE SEQUENCE  "SEQ_ORDER_DETAILS_ID"  MINVALUE 1 MAXVALUE 9999999999 INCREMEN
 --Sequence "SEQ_ORDER_ID" 已创建。
 
 
---Sequence "SEQ_ORDER_DETAILS_ID" 已创建。
-（3）触发器的应用语句及其相关语句。
+--Sequence "SEQ_ORDER_DETAILS_ID" 已创建。  
+```
+#### （3）触发器的应用语句及其相关语句。  
+```
 注：维护ORDER_DETAILS的数据时（insert,delete,update）要同步更新ORDERS表订单应收货款ORDERS.Trade_Receivable的值。
 
 --创建3个触发器
@@ -748,13 +768,18 @@ Trigger ORDER_DETAILS_SNTNS_TRIG 已编译
 /
 ALTER TRIGGER "ORDER_DETAILS_SNTNS_TRIG" DISABLE;
 
-Trigger "ORDER_DETAILS_SNTNS_TRIG"已变更。
-（4）查询数据语句。
-1.查询某个员工的信息sql语句及其结果如下图2-4-1所示。
+Trigger "ORDER_DETAILS_SNTNS_TRIG"已变更。  
+```
+#### （4）查询数据语句。  
+
+##### 1.查询某个员工的信息sql语句及其结果如下图2-4-1所示。  
+```
  SELECT * FROM EMPLOYEES WHERE employee_ID = 11;
- 
+ ```  
+ ![](https://github.com/songhaoge/oracle/blob/master/test4/1.png?raw=true)
 图2-4-1
-2.递归查询某个员工及其所有下属，子下属员工SQL语句及其结果如下图2-4-2所示。
+##### 2.递归查询某个员工及其所有下属，子下属员工SQL语句及其结果如下图2-4-2所示。  
+```
  WITH A (EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID) AS
  (SELECT EMPLOYEE_ID,NAME,EMAIL,PHONE_NUMBER,HIRE_DATE,SALARY,MANAGER_ID,DEPARTMENT_ID
  FROM employees WHERE employee_ID = 11
@@ -762,33 +787,45 @@ Trigger "ORDER_DETAILS_SNTNS_TRIG"已变更。
  SELECT B.EMPLOYEE_ID,B.NAME,B.EMAIL,B.PHONE_NUMBER,B.HIRE_DATE,B.SALARY,B.MANAGER_ID,B.DEPARTMENT_ID
  FROM A, employees B WHERE A.EMPLOYEE_ID = B.MANAGER_ID)
  SELECT * FROM A;
- 
+ ```  
+ ![](https://github.com/songhaoge/oracle/blob/master/test4/2.png?raw=true)
 图2-4-2
-3.查询订单表SQL语句及其结果如下图2-4-3所示，并且包括订单的订单应收货款: Trade_Receivable= sum(订单详单表.ProductNum*订单详单表.ProductPrice)- Discount。
+##### 3.查询订单表SQL语句及其结果如下图2-4-3所示，并且包括订单的订单应收货款: Trade_Receivable= sum(订单详单表.ProductNum*订单详单表.ProductPrice)- Discount。  
+```
 SELECT * FROM orders WHERE order_id=15042;
 SELECT * FROM order_details WHERE order_id=15042;
- 
+ ```  
+ ![](https://github.com/songhaoge/oracle/blob/master/test4/3.png?raw=true)
 图2-4-3
-4.查询订单详表SQL语句及其结果如下图2-4-4所示，要求显示订单的客户名称和客户电话，产品类型用汉字描述。
+##### 4.查询订单详表SQL语句及其结果如下图2-4-4所示，要求显示订单的客户名称和客户电话，产品类型用汉字描述。  
+```
  SELECT CUSTOMER_NAME as 客户名称,CUSTOMER_TEL as 客户电话,PRODUCT_NAME as 产品类型 FROM order_details,orders WHERE order_details.order_id=orders.order_id And orders.order_id=15042;
- 
+ ```  
+ ![](https://github.com/songhaoge/oracle/blob/master/test4/4.png?raw=true)
 图2-4-4
-5.查询出所有空订单SQL语句及其结果如下图2-4-5锁死，即没有订单详单的订单。
+##### 5.查询出所有空订单SQL语句及其结果如下图2-4-5锁死，即没有订单详单的订单。  
+```
 SELECT * FROM orders WHERE order_id NOT IN (SELECT order_id FROM order_details);
 或者
 SELECT orders.* FROM orders LEFT JOIN order_details ON orders.order_id = order_details.order_id WHERE order_details.order_id is NULL;
- 
+ ```
+ ![](https://github.com/songhaoge/oracle/blob/master/test4/5.png?raw=true)
 图2-4-5
-6.查询部门表SQL语句及其结果如下图2-4-6所示，同时显示部门的负责人姓名。
+##### 6.查询部门表SQL语句及其结果如下图2-4-6所示，同时显示部门的负责人姓名。  
+```
 SELECT departments.department_id,departments.department_name,employees.name FROM departments,employees WHERE employees.manager_id = departments.department_id;
- 
+```  
+![](https://github.com/songhaoge/oracle/blob/master/test4/6.png?raw=true)
 图2-4-6
-7.查询部门表SQL语句，统计每个部门的销售总金额。
+##### 7.查询部门表SQL语句，统计每个部门的销售总金额。  
+```
 SELECT departments.department_name as 部门名称,SUM(ORDERS.trade_receivable) as 总金额 FROM departments,employees,orders
 WHERE departments.department_id=employees.department_id AND employees.employee_id=orders.employee_id group by departments.department_name;
- 
+ ```
+ ![](https://github.com/songhaoge/oracle/blob/master/test4/7.png?raw=true)
 图2-4-7
-三、实验总结分析
+## 三、实验总结分析  
+***
 •	本次实验学会了如何应用序列以及触发器。
 •	加深了对于分区表的理解。
 •	对视图有了一定的了解。
