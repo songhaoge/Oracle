@@ -1,8 +1,8 @@
 # Oracle实验四：对象管理  
 
-## 一、第1步：在new_lyk用户中创建员工表、部门表、订单表、订单详单表、产品表。  
+## 一、第1步：在new_shg用户中创建员工表、部门表、订单表、订单详单表、产品表。  
 
-### （0）为new_lyk用户分配相关权限。  
+### （0）为new_shg用户分配相关权限。  
 ```
 -- QUOTAS
 ALTER USER NEW_LYK QUOTA UNLIMITED ON USERS;
@@ -10,14 +10,14 @@ ALTER USER NEW_LYK QUOTA UNLIMITED ON USERS02;
 ALTER USER NEW_LYK ACCOUNT UNLOCK;
 
 -- ROLES
-GRANT "CONNECT" TO NEW_LYK WITH ADMIN OPTION;
-GRANT "RESOURCE" TO NEW_LYK WITH ADMIN OPTION;
+GRANT "CONNECT" TO NEW_shg WITH ADMIN OPTION;
+GRANT "RESOURCE" TO NEW_shg WITH ADMIN OPTION;
 ALTER USER NEW_LYK DEFAULT ROLE "CONNECT","RESOURCE";
 
 -- SYSTEM PRIVILEGES
 GRANT CREATE VIEW TO NEW_LYK WITH ADMIN OPTION;
 ```
-### （1）登录new_lyk用户，创建部门表语句及其相关语句（DEPARTMENTS 表空间：USERS）。  
+### （1）登录new_shg用户，创建部门表语句及其相关语句（DEPARTMENTS 表空间：USERS）。  
 ```
 CREATE TABLE DEPARTMENTS
 (
@@ -62,7 +62,7 @@ NOCOMPRESS NO INMEMORY NOPARALLEL;
 
 Table DEPARTMENTS 已创建。
 ```
-### （2）登录new_lyk用户，创建员工表语句及其相关sql语句（EMPLOYEES 表空间：USERS）。  
+### （2）登录new_shg用户，创建员工表语句及其相关sql语句（EMPLOYEES 表空间：USERS）。  
 ```
 CREATE TABLE EMPLOYEES
 (
@@ -203,7 +203,7 @@ ENABLE;
 
 Table EMPLOYEES已变更。
 ```
-### （3）登录new_lyk用户，创建订单表语句及其相关sql语句（ORDERS 分区表：USERS,USERS02）。  
+### （3）登录new_shg用户，创建订单表语句及其相关sql语句（ORDERS 分区表：USERS,USERS02）。  
 ```
 --  DDL for Table ORDER_ID_TEMP
 CREATE GLOBAL TEMPORARY TABLE "ORDER_ID_TEMP"
@@ -373,7 +373,7 @@ ENABLE;
 
 Table ORDERS已变更。
 ```
-### （4）登录new_lyk用户，创建产品表语句及其相关sql语句（PRODUCTS 表空间：USERS）。  
+### （4）登录new_shg用户，创建产品表语句及其相关sql语句（PRODUCTS 表空间：USERS）。  
 ```
 CREATE TABLE PRODUCTS
 (
@@ -407,7 +407,7 @@ ENABLE;
 
 Table PRODUCTS已变更。
 ```
-### （5）登录new_lyk用户，创建订单详表语句及其相关sql语句（ORDER_DETAILS 分区表：USERS,USERS02）。  
+### （5）登录new_shg用户，创建订单详表语句及其相关sql语句（ORDER_DETAILS 分区表：USERS,USERS02）。  
 ```
 CREATE TABLE ORDER_DETAILS
 (
